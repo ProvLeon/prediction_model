@@ -10,7 +10,26 @@ SOCKET_URL = "https://prediction-model-apjr.onrender.com"
 sio = Client()
 alert_received = False
 
-# ... (keep the existing socket.io related functions) ...
+def listen_for_alerts():
+    try:
+        sio.connect(SOCKET_URL, namespaces=['/alerts'])
+        sio.wait()
+    except Exception as e:
+        print(f"Error connecting to Socket.IO: {e}")
+
+@sio.on('connect', namespace='/alerts')
+def on_connect():
+    print("Socket.IO connected to /alerts namespace")
+
+@sio.on('connect_error', namespace='/alerts')
+def on_connect_error(data):
+    print(f"Connection error: {data}")
+
+@sio.on('location_alert', namespace='/alerts')
+def on_location_alert(data):
+    global alert_received
+    print(f"Alert received: {data}")
+    alert_received = True
 
 def create_student(student_id):
     url = f"{BASE_URL}/api/update_location"
