@@ -7,3 +7,7 @@ SQLAlchemy==2.0.32
 requests==2.32.3
 eventlet==0.36.1
 Flask-SocketIO==5.3.6
+gunicorn==23.0.0
+mongoengine==0.29.0
+flask-mongoengine==1.0.0
+python-dotenv==0.19.2

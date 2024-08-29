@@ -2,12 +2,17 @@
 import eventlet
 eventlet.monkey_patch()
 
+import os
+from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_mongoengine import MongoEngine
 from flask_socketio import SocketIO
 from config import Config
 
-db = SQLAlchemy()
+# Load environment variables
+load_dotenv()
+
+db = MongoEngine()
 socketio = SocketIO()
 
 def create_app():
