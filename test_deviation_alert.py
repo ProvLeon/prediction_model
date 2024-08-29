@@ -10,26 +10,21 @@ SOCKET_URL = "https://prediction-model-apjr.onrender.com"
 sio = Client()
 alert_received = False
 
-def listen_for_alerts():
-    try:
-        sio.connect(SOCKET_URL, namespaces=['/alerts'])
-        sio.wait()
-    except Exception as e:
-        print(f"Error connecting to Socket.IO: {e}")
+# ... (keep the existing socket.io related functions) ...
 
-@sio.on('connect', namespace='/alerts')
-def on_connect():
-    print("Socket.IO connected to /alerts namespace")
-
-@sio.on('connect_error', namespace='/alerts')
-def on_connect_error(data):
-    print(f"Connection error: {data}")
-
-@sio.on('location_alert', namespace='/alerts')
-def on_location_alert(data):
-    global alert_received
-    print(f"Alert received: {data}")
-    alert_received = True
+def create_student(student_id):
+    url = f"{BASE_URL}/api/update_location"
+    payload = {
+        "student_id": student_id,
+        "name": f"Test Student {student_id}",
+        "email": f"{student_id}@example.com",
+        "phone": f"000-{student_id}",
+        "latitude": 40.7128,
+        "longitude": -74.0060
+    }
+    response = requests.post(url, json=payload)
+    print(f"Create Student - Status Code: {response.status_code}")
+    print(f"Response: {response.json()}")
 
 def test_update_location(student_id, latitude, longitude):
     url = f"{BASE_URL}/api/update_location"
@@ -61,6 +56,8 @@ def main():
 
     # Create a new student
     student_id = f"STUD{random.randint(1000, 9999)}"
+    create_student(student_id)
+
     base_lat, base_lon = 40.7128, -74.0060  # New York City coordinates
 
     # Simulate normal movement pattern
@@ -79,7 +76,7 @@ def main():
 
     # Simulate a deviation
     print("\nSimulating a deviation...")
-    deviated_lat = base_lat + 0.5  # Significant deviation
+    deviated_lat = base_lat + 2.5  # Significant deviation
     deviated_lon = base_lon + 0.5
     test_update_location(student_id, deviated_lat, deviated_lon)
 

@@ -17,9 +17,13 @@ def update_location():
     try:
         student = Student.query.get(student_id)
         if not student:
-            student = Student(id=student_id, name=data.get('name', 'Unknown'),
-                              email=data.get('email', f'{student_id}@example.com'),
-                              phone=data.get('phone', '0000000000'))
+            # Only create a new student if it doesn't exist
+            student = Student(
+                id=student_id,
+                name=data.get('name', f'Student {student_id}'),
+                email=data.get('email', f'{student_id}@example.com'),
+                phone=data.get('phone', f'000-{student_id}')
+            )
             db.session.add(student)
 
         new_location = Location(student_id=student_id, latitude=latitude, longitude=longitude)
@@ -31,7 +35,7 @@ def update_location():
         return jsonify({'message': 'Location updated successfully'}), 200
     except IntegrityError:
         db.session.rollback()
-        return jsonify({'error': 'Integrity error. Possibly duplicate unique field.'}), 400
+        return jsonify({'error': 'Integrity error. Student already exists.'}), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
