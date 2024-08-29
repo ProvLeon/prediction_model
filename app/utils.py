@@ -9,7 +9,7 @@ from app.shared_data import real_time_locations
 def check_deviations():
     while True:
         for student_id, location in real_time_locations.items():
-            patterns = Pattern.objects(student_id=student_id).order_by('-id').first()
+            patterns = Pattern.query.filter_by(student_id=student_id).order_by(Pattern.timestamp.desc()).first()
             if patterns:
                 prediction = pattern_tracker.predict(location)
                 if prediction[0] == -1:

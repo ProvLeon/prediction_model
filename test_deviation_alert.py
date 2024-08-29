@@ -10,19 +10,26 @@ SOCKET_URL = "https://prediction-model-apjr.onrender.com"
 sio = Client()
 alert_received = False
 
-@sio.on('connect')
-def on_connect():
-    print("Socket.IO connected")
+def listen_for_alerts():
+    try:
+        sio.connect(SOCKET_URL, namespaces=['/alerts'])
+        sio.wait()
+    except Exception as e:
+        print(f"Error connecting to Socket.IO: {e}")
 
-@sio.on('location_alert')
+@sio.on('connect', namespace='/alerts')
+def on_connect():
+    print("Socket.IO connected to /alerts namespace")
+
+@sio.on('connect_error', namespace='/alerts')
+def on_connect_error(data):
+    print(f"Connection error: {data}")
+
+@sio.on('location_alert', namespace='/alerts')
 def on_location_alert(data):
     global alert_received
     print(f"Alert received: {data}")
     alert_received = True
-
-def listen_for_alerts():
-    sio.connect(SOCKET_URL)
-    sio.wait()
 
 def test_update_location(student_id, latitude, longitude):
     url = f"{BASE_URL}/api/update_location"
@@ -48,6 +55,9 @@ def main():
     alert_thread = threading.Thread(target=listen_for_alerts)
     alert_thread.daemon = True
     alert_thread.start()
+
+    # Wait for Socket.IO connection
+    time.sleep(5)
 
     # Create a new student
     student_id = f"STUD{random.randint(1000, 9999)}"

@@ -16,12 +16,16 @@ def create_app():
 
     CORS(app)
     db.init_app(app)
-    socketio.init_app(app, async_mode='eventlet')
+    socketio.init_app(app, async_mode='eventlet', cors_allowed_origins="*")
 
     with app.app_context():
         db.create_all()
 
     from app import routes
     app.register_blueprint(routes.bp)
+
+    # Register the 'alerts' namespace
+    from app import socket_events
+    socketio.on_namespace(socket_events.AlertNamespace('/alerts'))
 
     return app
