@@ -1,16 +1,12 @@
 import eventlet
 eventlet.monkey_patch()
 
-import os
-from dotenv import load_dotenv
 from flask import Flask
-from flask_mongoengine import MongoEngine
+from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from config import Config
 
-load_dotenv()
-
-db = MongoEngine()
+db = SQLAlchemy()
 socketio = SocketIO()
 
 def create_app():
@@ -20,12 +16,8 @@ def create_app():
     db.init_app(app)
     socketio.init_app(app, async_mode='eventlet')
 
-    # Patch for JSONEncoder issue
-    try:
-        from flask.json import JSONEncoder
-    except ImportError:
-        from flask.json.provider import DefaultJSONProvider as JSONEncoder
-    app.json_encoder = JSONEncoder
+    with app.app_context():
+        db.create_all()
 
     from app import routes
     app.register_blueprint(routes.bp)
