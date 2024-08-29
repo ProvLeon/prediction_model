@@ -4,6 +4,14 @@
 
 This project implements a real-time student location tracking and pattern analysis system. It uses machine learning to detect anomalies in student movement patterns and provides alerts for potential safety concerns. The system is designed to work with a SQLite database for ease of deployment and testing.
 
+## Live Demo
+
+The application is deployed and accessible at:
+
+https://prediction-model-apjr.onrender.com
+
+You can use this URL as the base for all API endpoints described below.
+
 ## Features
 
 - Real-time location tracking of students
@@ -58,7 +66,7 @@ This project implements a real-time student location tracking and pattern analys
    python run.py
    ```
 
-## Running the Application
+## Running the Application Locally
 
 1. Start the Flask server:
    ```
@@ -68,6 +76,8 @@ This project implements a real-time student location tracking and pattern analys
 2. The server will start on `http://127.0.0.1:5000/`
 
 ## API Endpoints
+
+Replace `http://127.0.0.1:5000` with `https://prediction-model-apjr.onrender.com` when accessing the live deployment.
 
 - `POST /api/update_location`: Update a student's location
   - Payload: `{"student_id": "STUD1234", "latitude": 40.7128, "longitude": -74.0060}`
@@ -115,9 +125,9 @@ python test_deviation_alert.py
 
 ## Deployment
 
-This project is configured for deployment on Render.com. The `render.yaml` file in the root directory provides the necessary configuration for deployment.
-You may also deploy it on any web hosting sevice you prefer.
+This project is deployed on Render.com and is accessible at https://prediction-model-apjr.onrender.com.
 
+The `render.yaml` file in the root directory provides the necessary configuration for deployment on Render.com. You may also deploy it on any web hosting service you prefer.
 
 ## Contributing
 
